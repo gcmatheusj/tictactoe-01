@@ -8,6 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@expo/vector-icons": "^10.2.0",
     "axios": "^0.19.2",
     "eslint": "^7.1.0",
     "expo": "~37.0.3",

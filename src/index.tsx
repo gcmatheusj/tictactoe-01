@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
+import { AntDesign } from '@expo/vector-icons';
 
 import { initialBoard } from './utils/tictactoe';
 
@@ -45,6 +46,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#fff',
   },
+  reload: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#d3ff40',
+    height: 56,
+    width: 250,
+    borderRadius: 50,
+    marginTop: 60,
+  },
 });
 
 const App: React.FC = () => {
@@ -68,6 +78,12 @@ const App: React.FC = () => {
             <Text style={styles.boardButtonText}>{boardPosition}</Text>
           </TouchableOpacity>
         ))}
+        <TouchableOpacity
+          style={styles.reload}
+          onPress={() => setBoard(initialBoard)}
+        >
+          <AntDesign name="reload1" size={32} color="#181b24" />
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
