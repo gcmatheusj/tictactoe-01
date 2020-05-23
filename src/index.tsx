@@ -60,8 +60,19 @@ const styles = StyleSheet.create({
 const App: React.FC = () => {
   const [board, setBoard] = useState(initialBoard);
 
-  const handlePlayX = (): void => {
-    console.log('X');
+  const handlePlayX = (position: number): void => {
+    if (board[position] !== ' ') {
+      return;
+    }
+
+    const newBoard = board.map((value, index) => {
+      if (index === position) {
+        value = 'X';
+      }
+      return value;
+    });
+
+    setBoard(newBoard);
   };
 
   return (
@@ -73,7 +84,7 @@ const App: React.FC = () => {
           <TouchableOpacity
             style={styles.boardButton}
             key={index}
-            onPress={handlePlayX}
+            onPress={() => handlePlayX(index)}
           >
             <Text style={styles.boardButtonText}>{boardPosition}</Text>
           </TouchableOpacity>
