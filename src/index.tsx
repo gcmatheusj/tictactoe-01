@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 
+import api from './services/api';
 import { initialBoard } from './utils/tictactoe';
 
 const styles = StyleSheet.create({
@@ -60,6 +61,23 @@ const styles = StyleSheet.create({
 const App: React.FC = () => {
   const [board, setBoard] = useState(initialBoard);
 
+  const handlePlayO = async (boardString: string): Promise<void> => {
+    const response = await api.post(
+      '/',
+      {
+        board: boardString,
+        level: 'expert',
+      },
+      {
+        headers: {
+          Authorization: 'Bearer ckafe9un5000001l558e0dvek',
+        },
+      },
+    );
+    const responseBoard = response.data.board.split('');
+    setBoard(responseBoard);
+  };
+
   const handlePlayX = (position: number): void => {
     if (board[position] !== ' ') {
       return;
@@ -72,13 +90,21 @@ const App: React.FC = () => {
       return value;
     });
 
+    let boardString = '';
+
+    newBoard.map((value) => {
+      boardString = boardString.concat(value);
+      return value;
+    });
+
     setBoard(newBoard);
+    handlePlayO(boardString);
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
-      <Text style={styles.title}>TicTacToe - 01</Text>
+      <Text style={styles.title}>Tictactoe - 01</Text>
       <View style={styles.board}>
         {board.map((boardPosition, index) => (
           <TouchableOpacity
