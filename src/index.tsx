@@ -11,7 +11,7 @@ import {
 import { AntDesign } from '@expo/vector-icons';
 
 import api from './services/api';
-import { initialBoard } from './utils/tictactoe';
+import { initialBoard, winningPositions } from './utils/tictactoe';
 
 const styles = StyleSheet.create({
   container: {
@@ -60,6 +60,20 @@ const styles = StyleSheet.create({
 
 const App: React.FC = () => {
   const [board, setBoard] = useState(initialBoard);
+  const [gameOver, setGameOver] = useState(false);
+  const [winner, setWinner] = useState('');
+
+  const handleWinner = (player: string, updatedBoard: string[]): boolean => {
+    const hasWinner = winningPositions.find((_, index) => {
+      const positionOne = updatedBoard[winningPositions[index][0]] === player;
+      const positionTwo = updatedBoard[winningPositions[index][1]] === player;
+      const positionThree = updatedBoard[winningPositions[index][2]] === player;
+
+      return positionOne && positionTwo && positionThree;
+    });
+
+    return !!hasWinner;
+  };
 
   const handlePlayO = async (boardString: string): Promise<void> => {
     const response = await api.post(
@@ -75,15 +89,24 @@ const App: React.FC = () => {
       },
     );
     const responseBoard = response.data.board.split('');
+
+    const hasWinner = handleWinner('O', responseBoard);
+
+    if (hasWinner) {
+      setGameOver(true);
+      setWinner('O');
+      setBoard(responseBoard);
+    }
+
     setBoard(responseBoard);
   };
 
   const handlePlayX = (position: number): void => {
-    if (board[position] !== ' ') {
-      return;
-    }
+    if (gameOver) return;
 
-    const newBoard = board.map((value, index) => {
+    if (board[position] !== ' ') return;
+
+    const updatedBoard = board.map((value, index) => {
       if (index === position) {
         value = 'X';
       }
@@ -92,13 +115,21 @@ const App: React.FC = () => {
 
     let boardString = '';
 
-    newBoard.map((value) => {
+    updatedBoard.map((value) => {
       boardString = boardString.concat(value);
       return value;
     });
 
-    setBoard(newBoard);
-    handlePlayO(boardString);
+    setBoard(updatedBoard);
+
+    const hasWinner = handleWinner('X', updatedBoard);
+
+    if (hasWinner) {
+      setGameOver(true);
+      setWinner('X');
+    } else {
+      handlePlayO(boardString);
+    }
   };
 
   return (
