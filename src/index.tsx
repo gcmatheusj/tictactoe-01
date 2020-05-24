@@ -9,9 +9,13 @@ import {
   Dimensions,
 } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
+import LottieView from 'lottie-react-native';
+
+import Modal from './components/Modal';
 
 import api from './services/api';
 import { initialBoard, winningPositions } from './utils/tictactoe';
+import winnerAnimation from './animations/winner.json';
 
 const styles = StyleSheet.create({
   container: {
@@ -20,7 +24,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    marginTop: 36,
+    marginTop: 16,
     fontSize: 32,
     fontWeight: 'bold',
     textTransform: 'uppercase',
@@ -55,6 +59,21 @@ const styles = StyleSheet.create({
     width: 250,
     borderRadius: 50,
     marginTop: 60,
+  },
+  modalText: {
+    fontSize: 24,
+    textAlign: 'center',
+  },
+  draw: {
+    fontSize: 24,
+    textAlign: 'center',
+    marginBottom: 15,
+  },
+  lottie: {
+    width: 150,
+    height: 150,
+    marginTop: -6,
+    marginBottom: 5,
   },
 });
 
@@ -123,13 +142,22 @@ const App: React.FC = () => {
     setBoard(updatedBoard);
 
     const hasWinner = handleWinner('X', updatedBoard);
+    const checkEmpty = updatedBoard.find((value) => value === ' ');
 
     if (hasWinner) {
       setGameOver(true);
       setWinner('X');
+    } else if (!checkEmpty) {
+      setGameOver(true);
     } else {
       handlePlayO(boardString);
     }
+  };
+
+  const handleClose = (): void => {
+    setBoard(initialBoard);
+    setGameOver(false);
+    setWinner('');
   };
 
   return (
@@ -153,6 +181,23 @@ const App: React.FC = () => {
           <AntDesign name="reload1" size={32} color="#181b24" />
         </TouchableOpacity>
       </View>
+      <Modal open={gameOver} handleClose={handleClose}>
+        {winner ? (
+          <>
+            <Text style={styles.modalText}>
+              {`O jogador ${winner} ganhou!`}
+            </Text>
+            <LottieView
+              source={winnerAnimation}
+              style={styles.lottie}
+              autoPlay
+              loop={false}
+            />
+          </>
+        ) : (
+          <Text style={styles.draw}>Ninguem ganhou!</Text>
+        )}
+      </Modal>
     </SafeAreaView>
   );
 };
