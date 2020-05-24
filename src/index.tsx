@@ -12,6 +12,7 @@ import { AntDesign } from '@expo/vector-icons';
 import LottieView from 'lottie-react-native';
 
 import Modal from './components/Modal';
+import Score from './components/Score';
 
 import api from './services/api';
 import { initialBoard, winningPositions } from './utils/tictactoe';
@@ -81,6 +82,8 @@ const App: React.FC = () => {
   const [board, setBoard] = useState(initialBoard);
   const [gameOver, setGameOver] = useState(false);
   const [winner, setWinner] = useState('');
+  const [xCount, setXCount] = useState(0);
+  const [oCount, setOCount] = useState(0);
 
   const handleWinner = (player: string, updatedBoard: string[]): boolean => {
     const hasWinner = winningPositions.find((_, index) => {
@@ -99,7 +102,7 @@ const App: React.FC = () => {
       '/',
       {
         board: boardString,
-        level: 'expert',
+        level: 'easy',
       },
       {
         headers: {
@@ -114,6 +117,7 @@ const App: React.FC = () => {
     if (hasWinner) {
       setGameOver(true);
       setWinner('O');
+      setOCount(oCount + 1);
       setBoard(responseBoard);
     }
 
@@ -147,11 +151,20 @@ const App: React.FC = () => {
     if (hasWinner) {
       setGameOver(true);
       setWinner('X');
+      setXCount(xCount + 1);
     } else if (!checkEmpty) {
       setGameOver(true);
     } else {
       handlePlayO(boardString);
     }
+  };
+
+  const handleReload = (): void => {
+    setBoard(initialBoard);
+    setXCount(0);
+    setOCount(0);
+    setWinner('');
+    setGameOver(false);
   };
 
   const handleClose = (): void => {
@@ -164,6 +177,7 @@ const App: React.FC = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
       <Text style={styles.title}>Tictactoe - 01</Text>
+      <Score xCount={xCount} oCount={oCount} />
       <View style={styles.board}>
         {board.map((boardPosition, index) => (
           <TouchableOpacity
@@ -174,10 +188,7 @@ const App: React.FC = () => {
             <Text style={styles.boardButtonText}>{boardPosition}</Text>
           </TouchableOpacity>
         ))}
-        <TouchableOpacity
-          style={styles.reload}
-          onPress={() => setBoard(initialBoard)}
-        >
+        <TouchableOpacity style={styles.reload} onPress={handleReload}>
           <AntDesign name="reload1" size={32} color="#181b24" />
         </TouchableOpacity>
       </View>
