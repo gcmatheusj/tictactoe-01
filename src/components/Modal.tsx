@@ -8,11 +8,6 @@ import {
   StyleSheet,
 } from 'react-native';
 
-interface Props {
-  open: boolean;
-  handleClose(): void;
-}
-
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
@@ -51,6 +46,11 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
 });
+
+interface Props {
+  open: boolean;
+  handleClose(): void;
+}
 
 const Modal: React.FC<Props> = ({ open, handleClose, children }) => {
   return (

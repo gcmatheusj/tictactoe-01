@@ -13,6 +13,7 @@ import LottieView from 'lottie-react-native';
 
 import Modal from './components/Modal';
 import Score from './components/Score';
+import Level from './components/Level';
 
 import api from './services/api';
 import { initialBoard, winningPositions } from './utils/tictactoe';
@@ -76,6 +77,30 @@ const styles = StyleSheet.create({
     marginTop: -6,
     marginBottom: 5,
   },
+  inputIOS: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 4,
+    color: '#fff',
+    paddingRight: 30,
+    width: 220,
+  },
+  inputAndroid: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 0.5,
+    borderColor: 'purple',
+    borderRadius: 8,
+    color: 'black',
+    paddingRight: 30,
+    width: 220,
+  },
 });
 
 const App: React.FC = () => {
@@ -84,6 +109,7 @@ const App: React.FC = () => {
   const [winner, setWinner] = useState('');
   const [xCount, setXCount] = useState(0);
   const [oCount, setOCount] = useState(0);
+  const [level, setLevel] = useState('');
 
   const handleWinner = (player: string, updatedBoard: string[]): boolean => {
     const hasWinner = winningPositions.find((_, index) => {
@@ -102,7 +128,7 @@ const App: React.FC = () => {
       '/',
       {
         board: boardString,
-        level: 'easy',
+        level,
       },
       {
         headers: {
@@ -178,6 +204,7 @@ const App: React.FC = () => {
       <StatusBar barStyle="light-content" />
       <Text style={styles.title}>Tictactoe - 01</Text>
       <Score xCount={xCount} oCount={oCount} />
+      <Level value={level} onChange={setLevel} />
       <View style={styles.board}>
         {board.map((boardPosition, index) => (
           <TouchableOpacity
